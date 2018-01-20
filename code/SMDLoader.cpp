@@ -190,7 +190,7 @@ void SMDImporter::InternReadFile( const std::string& pFile, aiScene* pScene, IOS
         FixTimeValues();
 
         // compute absolute bone transformation matrices
-    //  ComputeAbsoluteBoneTransformations();
+        ComputeAbsoluteBoneTransformations();
     }
 
     if (!(pScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE))
@@ -416,7 +416,7 @@ void SMDImporter::CreateOutputMeshes()
         for (unsigned int iBone = 0; iBone < asBones.size();++iBone)
             if (!aaiBones[iBone].empty())++iNum;
 
-        if (false && iNum)
+        if (iNum) //false && WHYYYYY!?!
         {
             pcMesh->mNumBones = iNum;
             pcMesh->mBones = new aiBone*[pcMesh->mNumBones];
@@ -559,7 +559,8 @@ void SMDImporter::CreateOutputAnimations()
         // copy the name of the bone
         p->mNodeName.Set( i->mName);
 
-        p->mNumRotationKeys = (unsigned int) (*i).sAnim.asKeys.size();
+		p->mNumRotationKeys = (unsigned int) (*i).sAnim.asKeys.size();
+
         if (p->mNumRotationKeys)
         {
             p->mNumPositionKeys = p->mNumRotationKeys;
@@ -946,9 +947,6 @@ void SMDImporter::ParseNodeInfo(const char* szCurrent,
 void SMDImporter::ParseSkeletonElement(const char* szCurrent,
     const char** szCurrentOut,int iTime)
 {
-    aiVector3D vPos;
-    aiVector3D vRot;
-
     unsigned int iBone  = 0;
     if(!ParseUnsignedInt(szCurrent,&szCurrent,iBone))
     {
@@ -964,6 +962,9 @@ void SMDImporter::ParseSkeletonElement(const char* szCurrent,
 
     bone.sAnim.asKeys.push_back(SMD::Bone::Animation::MatrixKey());
     SMD::Bone::Animation::MatrixKey& key = bone.sAnim.asKeys.back();
+
+	aiVector3D &vPos = key.vPos;
+	aiVector3D &vRot = key.vRot;
 
     key.dTime = (double)iTime;
     if(!ParseFloat(szCurrent,&szCurrent,(float&)vPos.x))
