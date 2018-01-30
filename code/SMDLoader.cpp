@@ -997,15 +997,12 @@ void SMDImporter::ParseSkeletonElement(const char* szCurrent,
         LogErrorNoThrow("Unexpected EOF/EOL while parsing bone.rot.y");
         SMDI_PARSE_RETURN;
     }
-    // build the transformation matrix of the key
-    key.matrix.FromEulerAnglesXYZ(vRot.x,vRot.y,vRot.z);
-    {
-        aiMatrix4x4 mTemp;
-        mTemp.a4 = vPos.x;
-        mTemp.b4 = vPos.y;
-        mTemp.c4 = vPos.z;
-        key.matrix = key.matrix * mTemp;
-    }
+
+	aiQuaternion keyQuat( vRot.x, vRot.y, vRot.z );
+	key.matrix = aiMatrix4x4( keyQuat.GetMatrix() );
+	key.matrix.a4 = vPos.x;
+	key.matrix.b4 = vPos.y;
+	key.matrix.c4 = vPos.z;
 
     // go to the beginning of the next line
     SMDI_PARSE_RETURN;
