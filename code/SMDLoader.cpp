@@ -236,6 +236,9 @@ void SMDImporter::LogWarning(const char* msg)
 // Fix invalid time values in the file
 void SMDImporter::FixTimeValues()
 {
+	//This breaks a lot, so I'm disabling it
+	if ( true ) { return; }
+
     double dDelta = (double)iSmallestFrame;
     double dMax = 0.0f;
     for (std::vector<SMD::Bone>::iterator
