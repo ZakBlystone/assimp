@@ -498,7 +498,7 @@ void SMDImporter::CreateOutputNodes()
     }
 
     // now add all bones as dummy sub nodes to the graph
-    // AddBoneChildren(pScene->mRootNode,(uint32_t)-1);
+    AddBoneChildren(pScene->mRootNode,(uint32_t)-1);
 
     // if we have only one bone we can even remove the root node
     if (pScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE &&
@@ -527,7 +527,7 @@ void SMDImporter::CreateOutputAnimations()
         i =  asBones.begin();
         i != asBones.end();++i)
     {
-        if ((*i).bIsUsed)++iNumBones;
+        /*if ((*i).bIsUsed)*/++iNumBones;
     }
     if (!iNumBones)
     {
@@ -552,7 +552,7 @@ void SMDImporter::CreateOutputAnimations()
         i =  asBones.begin();
         i != asBones.end();++i)
     {
-        if (!(*i).bIsUsed)continue;
+        /*if (!(*i).bIsUsed)continue;*/
 
         aiNodeAnim* p = pp[a] = new aiNodeAnim();
 
@@ -982,6 +982,11 @@ void SMDImporter::ParseSkeletonElement(const char* szCurrent,
         LogErrorNoThrow("Unexpected EOF/EOL while parsing bone.pos.z");
         SMDI_PARSE_RETURN;
     }
+    if(!ParseFloat(szCurrent,&szCurrent,(float&)vRot.z))
+    {
+        LogErrorNoThrow("Unexpected EOF/EOL while parsing bone.rot.z");
+        SMDI_PARSE_RETURN;
+    }
     if(!ParseFloat(szCurrent,&szCurrent,(float&)vRot.x))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing bone.rot.x");
@@ -990,11 +995,6 @@ void SMDImporter::ParseSkeletonElement(const char* szCurrent,
     if(!ParseFloat(szCurrent,&szCurrent,(float&)vRot.y))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing bone.rot.y");
-        SMDI_PARSE_RETURN;
-    }
-    if(!ParseFloat(szCurrent,&szCurrent,(float&)vRot.z))
-    {
-        LogErrorNoThrow("Unexpected EOF/EOL while parsing bone.rot.z");
         SMDI_PARSE_RETURN;
     }
     // build the transformation matrix of the key
